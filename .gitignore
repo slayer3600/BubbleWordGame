@@ -1,6 +1,7 @@
 # Ignore everything
 /*
 /*/
+APK
 
 # Inverse ignore some stuff
 !/Assets/
