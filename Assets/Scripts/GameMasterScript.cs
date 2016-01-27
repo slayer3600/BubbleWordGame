@@ -45,11 +45,11 @@ public class GameMasterScript : MonoBehaviour {
 
     public void InitializeLevelData()
     {
-        //WebAPI myWebAPI = new WebAPI();
-        //string response = myWebAPI.Get("http://azurewebapihuntsman.azurewebsites.net/api/WordGameLevels");
-        //myAzureLevelData = JsonConvert.DeserializeObject<AzureLevelItemList>(response);
+        WebAPI myWebAPI = new WebAPI();
+        string response = myWebAPI.Get("http://azurewebapihuntsman.azurewebsites.net/api/WordGameLevels");
+        myAzureLevelData = JsonConvert.DeserializeObject<AzureLevelItemList>(response);
         //Save();
-        Load();
+        //Load();
     }
 
     public void Save()
