@@ -280,7 +280,7 @@ public class GameManagerScript : MonoBehaviour {
 
         StringBuilder wordlist = new StringBuilder();
 
-        foreach (var word in wordsFound)
+        foreach (string word in wordsFound)
         {
             wordlist.AppendLine("- " + word);
         }
