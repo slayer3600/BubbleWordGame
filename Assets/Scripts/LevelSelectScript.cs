@@ -17,7 +17,7 @@ public class LevelSelectScript : MonoBehaviour {
 
     void LoadLevel()
     {
-        Vibration.Vibrate(25);
+        //Vibration.Vibrate(25);
         int selectedLevel = int.Parse(GetComponentInChildren<Text>().text);
         GameMasterScript.masterScript.SetLevel(selectedLevel);
         //Application.LoadLevel("level1");

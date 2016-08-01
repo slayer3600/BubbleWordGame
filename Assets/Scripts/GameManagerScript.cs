@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine.UI;
 using Assets.Scripts;
 using UnityEngine.SceneManagement;
@@ -17,6 +18,7 @@ public class GameManagerScript : MonoBehaviour {
     public Text timerTextUI;
     public Text levelTitleUI;
     public Text levelDescriptionUI;
+    public Text foundWordlist;
     public AudioClip invalidWordSound;
     public AudioClip validWordSound;
     public AudioClip bigWordSound;
@@ -35,8 +37,8 @@ public class GameManagerScript : MonoBehaviour {
     private string[] wordList;
     private List<string> wordsFound = new List<string>();
     private string currentWord = string.Empty;
-    //private LevelItem levelData;
-    private AzureLevelItem levelData;
+    private LevelItem levelData;
+    //private AzureLevelItem levelData;
     private bool levelStarted = false;
 
     private int numOfThreeLetterWordsReq = 0;
@@ -247,6 +249,7 @@ public class GameManagerScript : MonoBehaviour {
     void LevelLost()
     {
         StopPlay();
+        DisplayFoundWords();
         levelTitleUI.text = "Try Again";
         levelDescriptionUI.text = "No worries, I've bet you've done worse things before. Dust it off and try again!";
         startDialog.gameObject.SetActive(true);
@@ -257,6 +260,7 @@ public class GameManagerScript : MonoBehaviour {
     {
 
         StopPlay();
+        DisplayFoundWords();
         levelTitleUI.text = levelData.WinTitle.Replace("/n", System.Environment.NewLine);
         levelDescriptionUI.text = levelData.WinDescription.Replace("/n", System.Environment.NewLine);
         startDialog.gameObject.SetActive(true);
@@ -269,6 +273,19 @@ public class GameManagerScript : MonoBehaviour {
             PlayerPrefs.SetInt("HighestLevelAchieved", levelData.LevelNumber);
         }
 
+    }
+
+    public void DisplayFoundWords()
+    {
+
+        StringBuilder wordlist = new StringBuilder();
+
+        foreach (var word in wordsFound)
+        {
+            wordlist.AppendLine("- " + word);
+        }
+
+        foundWordlist.text = wordlist.ToString();
     }
 
     public void CreateWord()

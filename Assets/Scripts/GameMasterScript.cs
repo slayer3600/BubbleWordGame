@@ -8,9 +8,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 public class GameMasterScript : MonoBehaviour {
 
     public static GameMasterScript masterScript;
-    //public LevelItemList myLevelData;
     public AzureLevelItemList myAzureLevelData;
+    public LevelItemList myLevelData;
     public int currentLevel = 0;
+    public string currentGameMode = string.Empty;
 
 	// Use this for initialization
 	void Awake () {
@@ -18,7 +19,8 @@ public class GameMasterScript : MonoBehaviour {
         if (!masterScript)
         {
             masterScript = this;
-            InitializeLevelData();
+            //InitializeLevelData();
+            //InitializeSOLevelData();
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -28,20 +30,31 @@ public class GameMasterScript : MonoBehaviour {
     
 	}
 
+    public void SetGameMode (string gameMode)
+    {
+        //storymode or casual
+        currentGameMode = gameMode;
+    }
+
+    public string GetGameMode()
+    {
+        return currentGameMode;
+    }
+
     public void SetLevel(int level)
     {
         currentLevel = level;
     }
 
-    //public LevelItem GetCurrentLevelData()
-    //{
-    //    return myLevelData.level[currentLevel-1];
-    //}
-
-    public AzureLevelItem GetCurrentLevelData()
+    public LevelItem GetCurrentLevelData()
     {
-        return myAzureLevelData[currentLevel - 1];
+        return myLevelData.level[currentLevel - 1];
     }
+
+    //public AzureLevelItem GetCurrentLevelData()
+    //{
+    //    return myAzureLevelData[currentLevel - 1];
+    //}
 
     public void InitializeLevelData()
     {
@@ -50,6 +63,14 @@ public class GameMasterScript : MonoBehaviour {
         myAzureLevelData = JsonConvert.DeserializeObject<AzureLevelItemList>(response);
         //Save();
         //Load();
+    }
+
+    public void InitializeSOLevelData()
+    {
+
+        //LevelItemList myLevelData = new LevelItemList();
+        Debug.Log("Hello");
+
     }
 
     public void Save()

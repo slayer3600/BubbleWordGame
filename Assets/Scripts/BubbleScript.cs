@@ -11,6 +11,7 @@ public class BubbleScript : MonoBehaviour {
     public Color isSelectedColor;
     public float timeToLive = 10f;
     public bool isSelected = false;
+    public Color vowelColor;
 
     private GameManagerScript gm;
     private AudioSource source;
@@ -37,6 +38,12 @@ public class BubbleScript : MonoBehaviour {
         char[] alphabet = "AABCDEEEFGHIIJKLMNOOPQRSTUVWXYZ".ToCharArray();
         int randomLetter = Random.Range(0, alphabet.Length);
         letter.text = alphabet[randomLetter].ToString();
+
+        if ("AEIOU".Contains(letter.text))
+        {
+            letter.color = vowelColor;
+        }
+        
         timeToLive = Time.time + timeToLive;
 
         rb.drag = 0;
@@ -75,7 +82,7 @@ public class BubbleScript : MonoBehaviour {
     void OnTouchDown(Vector2 point)
     {
 
-        Vibration.Vibrate(25);
+        //Vibration.Vibrate(25);
         BuildWord();
 
     }

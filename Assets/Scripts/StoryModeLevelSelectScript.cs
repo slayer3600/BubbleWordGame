@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class StoryModeLevelSelectScript : MonoBehaviour {
@@ -36,12 +37,12 @@ public class StoryModeLevelSelectScript : MonoBehaviour {
             go = (GameObject)Instantiate(levelSelectButton, startingPoint, Quaternion.identity);
             go.transform.SetParent(myCanvas.transform, false);
 
-            if (level.Level > highestLevelAchieved + 1)
+            if (level.LevelNumber > highestLevelAchieved + 1)
             {
                 go.GetComponent<Button>().interactable = false;
             }
 
-            go.GetComponentInChildren<Text>().text = level.Level.ToString();
+            go.GetComponentInChildren<Text>().text = level.LevelNumber.ToString();
             i++;
 
             if (i == columns)
@@ -55,5 +56,10 @@ public class StoryModeLevelSelectScript : MonoBehaviour {
 
 
 
+    }
+
+    public void LoadLevel(string gameMode)
+    {
+        SceneManager.LoadScene(gameMode);
     }
 }
