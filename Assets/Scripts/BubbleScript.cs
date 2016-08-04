@@ -133,6 +133,18 @@ public class BubbleScript : MonoBehaviour {
         }
     }
 
+    public void ToggleLetterVisibility(bool visible)
+    {
+
+        MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
+
+        foreach (Renderer myRenderer in renderers)
+        {
+            myRenderer.enabled = visible;
+        }
+
+    }
+
     void Blink()
     {
 

@@ -9,6 +9,10 @@ using UnityEngine.SceneManagement;
 public class GameManagerScript : MonoBehaviour {
 
     public GameObject bubblePrefab;
+    public GameObject bubbleUI3LetterPanel;
+    public GameObject bubbleUI4LetterPanel;
+    public GameObject bubbleUI5LetterPanel;
+    public GameObject bubbleUIPrefab;
     public int maxNoBubbles = 10;
     public Transform[] spawnPoints;
     public TextAsset dictionary;
@@ -27,10 +31,12 @@ public class GameManagerScript : MonoBehaviour {
     public float timerSeconds = 0;
     public float bubbleSpawnInterval = .5f;
     public GameObject startDialog;
+    public GameObject worldListScrollView;
     public Button submitButton;
     public Button continueButton;
     public Button okButton;
     public Button quitButton;
+    public Button pauseButton;
 
     private AudioSource source;
     private int currentNoBubbles;
@@ -40,6 +46,7 @@ public class GameManagerScript : MonoBehaviour {
     private LevelItem levelData;
     //private AzureLevelItem levelData;
     private bool levelStarted = false;
+    private bool paused = false;
 
     private int numOfThreeLetterWordsReq = 0;
     private int numOfFourLetterWordsReq = 0;
@@ -50,12 +57,23 @@ public class GameManagerScript : MonoBehaviour {
     private int numOfNineLetterWordsReq = 0;
     private int numOfTenLetterWordsReq = 0;
 
+    private List<GameObject> ThreeLetterBubbleUIs = new List<GameObject>();
+    private List<GameObject> FourLetterBubbleUIs = new List<GameObject>();
+    private List<GameObject> FiveLetterBubbleUIs = new List<GameObject>();
+
+    //3 letters = 5
+    //4 letters = 15
+    //5 letters = 30
+    //6 letters = 50
+    //7 or more letters = 100
     void Awake()
     {
         
         Time.timeScale = 0f;
         submitButton.enabled = false;
+        pauseButton.enabled = false;
         continueButton.gameObject.SetActive(false);
+        worldListScrollView.gameObject.SetActive(false);
         SetupLevelConfigData();
     }
 
@@ -68,7 +86,8 @@ public class GameManagerScript : MonoBehaviour {
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         submitButton.enabled = true;
-        
+        pauseButton.enabled = true;
+
         timerSeconds = levelData.TimeLimit + 1;
 
         CreateDictionary();
@@ -76,6 +95,7 @@ public class GameManagerScript : MonoBehaviour {
         InvokeRepeating("SpawnBubbles", 0f, bubbleSpawnInterval);
 
     }
+
 
     void SetupLevelConfigData()
     {
@@ -92,6 +112,33 @@ public class GameManagerScript : MonoBehaviour {
         numOfNineLetterWordsReq = levelData.NineLetterWordCount;
         numOfTenLetterWordsReq = levelData.TenLetterWordCount;
 
+        CreateWordCounterUI();
+
+    }
+
+    void CreateWordCounterUI()
+    {
+
+        for (int i = 0; i < numOfThreeLetterWordsReq; i++)
+        {
+            GameObject go = Instantiate(bubbleUIPrefab);
+            go.transform.SetParent(bubbleUI3LetterPanel.transform, false);
+            ThreeLetterBubbleUIs.Add(go);
+        }
+
+        for (int i = 0; i < numOfFourLetterWordsReq; i++)
+        {
+            GameObject go = Instantiate(bubbleUIPrefab);
+            go.transform.SetParent(bubbleUI4LetterPanel.transform, false);
+            FourLetterBubbleUIs.Add(go);
+        }
+
+        for (int i = 0; i < (numOfFiveLetterWordsReq + numOfSixLetterWordsReq + numOfSevenLetterWordsReq + numOfEightLetterWordsReq + numOfNineLetterWordsReq + numOfTenLetterWordsReq); i++)
+        {
+            GameObject go = Instantiate(bubbleUIPrefab);
+            go.transform.SetParent(bubbleUI5LetterPanel.transform, false);
+            FiveLetterBubbleUIs.Add(go);
+        }
     }
 
     public void Resume()
@@ -102,6 +149,29 @@ public class GameManagerScript : MonoBehaviour {
         levelStarted = true;
     }
 
+    public void TogglePause()
+    {
+        GameObject[] bubbles = GameObject.FindGameObjectsWithTag("Bubble");
+
+        foreach (GameObject bubble in bubbles)
+        {
+            BubbleScript bs = bubble.GetComponent<BubbleScript>();
+            bs.ToggleLetterVisibility(paused);
+        }
+
+        if (paused)
+        {
+            //unpause
+            Time.timeScale = 1f;
+            paused = false;
+        }
+        else
+        {
+            //pause
+            Time.timeScale = 0f;
+            paused = true;
+        }
+    }
     public void LoadTitleScreen()
     {
         //Application.LoadLevel("title");
@@ -191,27 +261,35 @@ public class GameManagerScript : MonoBehaviour {
             switch (word.Length)
             {
                 case 3:
+                    HighlightWordCounterUI(word.Length,threeLetterWordsFound);
                     threeLetterWordsFound += 1;
                     break;
                 case 4:
+                    HighlightWordCounterUI(word.Length, fourLetterWordsFound);
                     fourLetterWordsFound += 1;
                     break;
                 case 5:
+                    HighlightWordCounterUI(word.Length, fiveLetterWordsFound + sixLetterWordsFound + sevenLetterWordsFound + eightLetterWordsFound + nineLetterWordsFound + tenLetterWordsFound);
                     fiveLetterWordsFound += 1;
                     break;
                 case 6:
+                    HighlightWordCounterUI(word.Length, fiveLetterWordsFound + sixLetterWordsFound + sevenLetterWordsFound + eightLetterWordsFound + nineLetterWordsFound + tenLetterWordsFound);
                     sixLetterWordsFound += 1;
                     break;
                 case 7:
+                    HighlightWordCounterUI(word.Length, fiveLetterWordsFound + sixLetterWordsFound + sevenLetterWordsFound + eightLetterWordsFound + nineLetterWordsFound + tenLetterWordsFound);
                     sevenLetterWordsFound += 1;
                     break;
                 case 8:
+                    HighlightWordCounterUI(word.Length, fiveLetterWordsFound + sixLetterWordsFound + sevenLetterWordsFound + eightLetterWordsFound + nineLetterWordsFound + tenLetterWordsFound);
                     eightLetterWordsFound += 1;
                     break;
                 case 9:
-                    nineLetterWordsFound += 1;
+                    HighlightWordCounterUI(word.Length, fiveLetterWordsFound + sixLetterWordsFound + sevenLetterWordsFound + eightLetterWordsFound + nineLetterWordsFound + tenLetterWordsFound);
+                    nineLetterWordsFound += 1;                    
                     break;
                 case 10:
+                    HighlightWordCounterUI(word.Length, fiveLetterWordsFound + sixLetterWordsFound + sevenLetterWordsFound + eightLetterWordsFound + nineLetterWordsFound + tenLetterWordsFound);
                     tenLetterWordsFound += 1;
                     break;
             }
@@ -234,12 +312,70 @@ public class GameManagerScript : MonoBehaviour {
         }
     }
 
+    void HighlightWordCounterUI(int numberofLetters, int counter)
+    {
+
+        switch (numberofLetters)
+        {
+            case 3:
+                if (ThreeLetterBubbleUIs.Count > 0)
+                {
+                    ThreeLetterBubbleUIs[counter].GetComponentInChildren<BubbleUIToggle>().SetChecked();
+                }               
+                break;
+            case 4:
+                if (FourLetterBubbleUIs.Count > 0)
+                {
+                    FourLetterBubbleUIs[counter].GetComponentInChildren<BubbleUIToggle>().SetChecked();
+                }
+                break;
+            case 5:
+                if (FiveLetterBubbleUIs.Count > 0)
+                {
+                    FiveLetterBubbleUIs[counter].GetComponentInChildren<BubbleUIToggle>().SetChecked();
+                }
+                break;
+            case 6:
+                if (FiveLetterBubbleUIs.Count > 0)
+                {
+                    FiveLetterBubbleUIs[counter].GetComponent<BubbleUIToggle>().SetChecked();
+                }
+                break;
+            case 7:
+                if (FiveLetterBubbleUIs.Count > 0)
+                {
+                    FiveLetterBubbleUIs[counter].GetComponent<BubbleUIToggle>().SetChecked();
+                }
+                break;
+            case 8:
+                if (FiveLetterBubbleUIs.Count > 0)
+                {
+                    FiveLetterBubbleUIs[counter].GetComponent<BubbleUIToggle>().SetChecked();
+                }
+                break;
+            case 9:
+                if (FiveLetterBubbleUIs.Count > 0)
+                {
+                    FiveLetterBubbleUIs[counter].GetComponent<BubbleUIToggle>().SetChecked();
+                }
+                break;
+            case 10:
+                if (FiveLetterBubbleUIs.Count > 0)
+                {
+                    FiveLetterBubbleUIs[counter].GetComponent<BubbleUIToggle>().SetChecked();
+                }
+                break;
+        }
+
+    }
+
     void StopPlay()
     {
         //Time.timeScale = 0; 
         CancelInvoke();
         levelStarted = false;
         submitButton.enabled = false;
+        pauseButton.enabled = false;
         PopAllBubbles();
 
         continueButton.gameObject.SetActive(true);
@@ -252,6 +388,7 @@ public class GameManagerScript : MonoBehaviour {
         DisplayFoundWords();
         levelTitleUI.text = "Try Again";
         levelDescriptionUI.text = "No worries, I've bet you've done worse things before. Dust it off and try again!";
+        worldListScrollView.gameObject.SetActive(true);
         startDialog.gameObject.SetActive(true);
         source.PlayOneShot(levelLostSound);
     }
@@ -263,6 +400,7 @@ public class GameManagerScript : MonoBehaviour {
         DisplayFoundWords();
         levelTitleUI.text = levelData.WinTitle.Replace("/n", System.Environment.NewLine);
         levelDescriptionUI.text = levelData.WinDescription.Replace("/n", System.Environment.NewLine);
+        worldListScrollView.gameObject.SetActive(true);
         startDialog.gameObject.SetActive(true);
         source.PlayOneShot(levelWonSound);
 
