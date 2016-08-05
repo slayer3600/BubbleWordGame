@@ -338,31 +338,31 @@ public class GameManagerScript : MonoBehaviour {
             case 6:
                 if (FiveLetterBubbleUIs.Count > 0)
                 {
-                    FiveLetterBubbleUIs[counter].GetComponent<BubbleUIToggle>().SetChecked();
+                    FiveLetterBubbleUIs[counter].GetComponentInChildren<BubbleUIToggle>().SetChecked();
                 }
                 break;
             case 7:
                 if (FiveLetterBubbleUIs.Count > 0)
                 {
-                    FiveLetterBubbleUIs[counter].GetComponent<BubbleUIToggle>().SetChecked();
+                    FiveLetterBubbleUIs[counter].GetComponentInChildren<BubbleUIToggle>().SetChecked();
                 }
                 break;
             case 8:
                 if (FiveLetterBubbleUIs.Count > 0)
                 {
-                    FiveLetterBubbleUIs[counter].GetComponent<BubbleUIToggle>().SetChecked();
+                    FiveLetterBubbleUIs[counter].GetComponentInChildren<BubbleUIToggle>().SetChecked();
                 }
                 break;
             case 9:
                 if (FiveLetterBubbleUIs.Count > 0)
                 {
-                    FiveLetterBubbleUIs[counter].GetComponent<BubbleUIToggle>().SetChecked();
+                    FiveLetterBubbleUIs[counter].GetComponentInChildren<BubbleUIToggle>().SetChecked();
                 }
                 break;
             case 10:
                 if (FiveLetterBubbleUIs.Count > 0)
                 {
-                    FiveLetterBubbleUIs[counter].GetComponent<BubbleUIToggle>().SetChecked();
+                    FiveLetterBubbleUIs[counter].GetComponentInChildren<BubbleUIToggle>().SetChecked();
                 }
                 break;
         }
